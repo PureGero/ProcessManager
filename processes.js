@@ -1,7 +1,7 @@
-const fs = require('fs');
+var fs = require('fs');
 
-const user_data = 'user_data';
-const processes = user_data + '/processes';
+var user_data = 'user_data';
+var processes = user_data + '/processes';
 
 var PROCESSES = [];
 

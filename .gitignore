@@ -1,0 +1,6 @@
+# HTTPS Certificates
+*.pem
+
+# User data
+user_data/
+
