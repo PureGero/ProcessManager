@@ -1,0 +1,64 @@
+<!doctype html>
+    <head>
+        <title>ProcessManager - Login</title>
+        <style>
+            html, body {
+                font-family: Arial, sans-serif;
+                height: 100%;
+                background-color: #dec;
+            }
+            h1 {
+                font-size: 48px;
+            }
+            .outer {
+                display: table;
+                width: 100%;
+                height: 100%;
+                text-align: center;
+            }
+            .inner {
+                display: table-cell;
+                vertical-align: middle;
+                padding-bottom: 10%;
+            }
+            .background {
+                margin: auto;
+                width: 300px;
+                box-shadow: 5px 5px 30px 10px rgba(0,0,0,0.25);
+                padding: 40px 60px;
+                padding-top: 20px;
+                background-color: white;
+            }
+            input {
+                display: inline-block;
+                width: 250px;
+                padding: 18px;
+                font-size: 18px;
+                margin-bottom: 12px;
+                border: 1px solid #ccc;
+            }
+            input[type=submit] {
+                width: 288px;
+                cursor: pointer;
+                background-color: #fafafa;
+            }
+            input[type=submit]:hover {
+                background-color: #eee;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="outer">
+            <div class="inner">
+                <div class="background">
+                    <h1>Login</h1>
+                    <form>
+                        <input type="text" name="username" placeholder="Username" autofocus/><br/>
+                        <input type="password" name="password" placeholder="Password"/><br/>
+                        <input type="submit" value="Login"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
