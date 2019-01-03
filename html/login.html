@@ -7,8 +7,17 @@
                 height: 100%;
                 background-color: #dec;
             }
-            h1 {
+            .title {
+                display: block;
+                font-weight: bold;
                 font-size: 48px;
+                margin-bottom: 3px;
+            }
+            .invaliduser {
+                display: block;
+                color: red;
+                font-size: 16px;
+                margin-bottom: 6px;
             }
             .outer {
                 display: table;
@@ -26,7 +35,6 @@
                 width: 300px;
                 box-shadow: 5px 5px 30px 10px rgba(0,0,0,0.25);
                 padding: 40px 60px;
-                padding-top: 20px;
                 background-color: white;
             }
             input {
@@ -51,8 +59,15 @@
         <div class="outer">
             <div class="inner">
                 <div class="background">
-                    <h1>Login</h1>
-                    <form>
+                    <span class="title">Login</span><br/>
+                    <span class="invaliduser">
+                        <script>
+                            if (location.pathname.indexOf('login') >= 0) {
+                                document.write('Invalid username/password');
+                            }
+                        </script>
+                    </span><br/>
+                    <form method="POST" action="login">
                         <input type="text" name="username" placeholder="Username" autofocus/><br/>
                         <input type="password" name="password" placeholder="Password"/><br/>
                         <input type="submit" value="Login"/>
