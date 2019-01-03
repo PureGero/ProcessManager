@@ -4,3 +4,6 @@
 # User data
 user_data/
 
+# Dependencies
+node_modules/
+
