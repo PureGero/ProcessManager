@@ -5,12 +5,12 @@ var url = require('url');
 var querystring = require('querystring');
 var processes = require('./processes');
 var cert = require('./cert');
-var login = require('./login').login;
+var login = require('./login');
 
 var MIMES = {
-    'html': 'text/html, charset=utf-8',
-    'js': 'application/javascript, charset=utf-8',
-    'css': 'text/css, charset=utf-8',
+    'html': 'text/html; charset=utf-8',
+    'js': 'application/javascript; charset=utf-8',
+    'css': 'text/css; charset=utf-8',
     'png': 'image/png',
     'jpg': 'image/jpeg',
     'jpeg': 'image/jpeg',
@@ -23,11 +23,15 @@ var PAGES = {};
 function requestHandler(req, res) {
     // All pathnames in lowercase
     var page = url.parse(req.url).pathname.toLowerCase();
-    if (page == '/' || page == '/login') {
-        loginPage(req, res);
-    } else if (page.substr(1) in PAGES) {
+    var username = login.getUsernameFromCookies(req);
+    if (username && page == '/') {
+        indexPage(req, res);
+    } else if (username && page.substr(1) in PAGES) {
         // Call the function with the pathname
         PAGES[page.substr(1)](req, res);
+    } else if (!username && (page == '/' || page == '/login')) {
+        // Not logged in
+        loginPage(req, res);
     } else {
         res.writeHead(404);
         res.end('404 Not Found');
@@ -35,10 +39,11 @@ function requestHandler(req, res) {
 }
 
 function doLogin(req, res, username, password) {
-    login(username, password, (success) => {
+    login.login(username, password, (success) => {
         if (success) {
             // Login successful, take them to the homepage
-            res.writeHead(303, {'Location': '/'});
+            var id = login.setUsername(username);
+            res.writeHead(303, {'Location': '/', 'Set-Cookie': 'sessid=' + id});
             res.end();
         } else {
             // Login failed, show them the login page again
@@ -46,6 +51,11 @@ function doLogin(req, res, username, password) {
         }
     });
 }
+
+function indexPage(req, res) {
+    sendFile('index.html', req, res);
+}
+PAGES.index = indexPage;
 
 function loginPage(req, res) {
     if (req.method == 'POST') {
@@ -76,7 +86,7 @@ function sendFile(file, req, res) {
     if (extension in MIMES) {
         res.writeHead(200, {'Content-Type': MIMES[extension]});
     } else {
-        res.writeHead(200, {'Content-Type': 'text/plain, charset=utf-8'});
+        res.writeHead(200, {'Content-Type': 'text/plain; charset=utf-8'});
     }
     fs.readFile('html/' + file, (err, data) => {
         if (err) throw err;

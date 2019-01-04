@@ -1,12 +1,12 @@
 var server = require('./server');
 var system = require('./system');
 
-// --- CONSTANTS --- \\
+// --- CONSTANTS --- //
 
 var HTTP_PORTS = [80, 8080];
 var HTTPS_PORTS = [443, 8443];
 
-// --- STARTUP --- \\
+// --- STARTUP --- //
 
 HTTP_PORTS.forEach(function(port) {
     server.listenHttp(port);
