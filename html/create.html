@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+    <head>
+        <title>ProcessManager - Create</title>
+        <style>
+            html, body {
+                font-family: Arial, sans-serif;
+                height: 100%;
+                background-color: #dec;
+            }
+            .title {
+                display: block;
+                font-weight: bold;
+                font-size: 36px;
+                margin-bottom: 3px;
+            }
+            .invaliduser {
+                display: block;
+                color: red;
+                font-size: 16px;
+                margin-bottom: 6px;
+            }
+            .outer {
+                display: table;
+                width: 100%;
+                height: 100%;
+                text-align: center;
+            }
+            .inner {
+                display: table-cell;
+                vertical-align: middle;
+                padding-bottom: 10%;
+            }
+            .background {
+                margin: auto;
+                width: 500px;
+                box-shadow: 5px 5px 30px 10px rgba(0,0,0,0.25);
+                padding: 35px 40px;
+                background-color: white;
+                font-weight: bold;
+            }
+            table {
+                width: 100%;
+            }
+            th {
+                text-align: right;
+                padding-bottom: 10px;
+            }
+            td {
+                text-align: left;
+                padding-left: 5px;
+            }
+            input {
+                display: inline-block;
+                width: 250px;
+                padding: 14px;
+                font-size: 14px;
+                margin-bottom: 12px;
+                border: 1px solid #ccc;
+            }
+            input.command {
+                width: 420px;
+            }
+            input[type=submit], input[type=button] {
+                width: 280px;
+                cursor: pointer;
+                background-color: #fafafa;
+            }
+            input[type=submit]:hover, input[type=button]:hover {
+                background-color: #eee;
+            }
+            input[type=button] {
+                width: 30px;
+                padding-left: 0;
+                padding-right: 0;
+                text-align: center;
+                cursor: pointer;
+            }
+        </style>
+        <script>
+            var binLength = 1;
+            function newBin() {
+                var bin = document.createElement('input');
+                bin.type = 'text';
+                bin.className = 'command';
+                bin.name = 'binpath' + (binLength++);
+                event.target.parentElement.insertBefore(bin, event.target);
+            }
+        </script>
+    </head>
+    <body>
+        <div class="outer">
+            <div class="inner">
+                <div class="background">
+                    <span class="title">Create new process</span><br/>
+                    <form method="POST" action="create">
+                        <table>
+                            <tr>
+                                <th>
+                                    Process Name:
+                                </th>
+                                <td>
+                                    <input type="text" name="name" placeholder="Name" autofocus/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Working Directory:
+                                </th>
+                                <td>
+                                    <input type="text" name="workingdirectory" placeholder="/bin" autofocus/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Commands:
+                                </th>
+                                <td>
+                                    
+                                </td>
+                            </tr>
+                        </table>
+                        <input type="text" class="command" name="binpath0" placeholder="/bin/command -e 1"/>
+                        <input type="button" value="+" onclick="newBin()"/><br/>
+                        <input type="submit" value="Create"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

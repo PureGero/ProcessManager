@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+    <head>
+        <title>ProcessManager - Info</title>
+        <style>
+            html, body {
+                font-family: Arial, sans-serif;
+                height: 100%;
+                background-color: #dec;
+            }
+            .title {
+                display: block;
+                font-weight: bold;
+                font-size: 36px;
+                margin-bottom: 3px;
+                font-weight: bold;
+            }
+            .invaliduser {
+                display: block;
+                color: red;
+                font-size: 16px;
+                margin-bottom: 6px;
+            }
+            .outer {
+                display: table;
+                width: 100%;
+                height: 100%;
+                text-align: center;
+            }
+            .inner {
+                display: table-cell;
+                vertical-align: middle;
+                padding-bottom: 10%;
+            }
+            .background {
+                margin: auto;
+                width: 500px;
+                box-shadow: 5px 5px 30px 10px rgba(0,0,0,0.25);
+                padding: 35px 40px;
+                background-color: white;
+            }
+            table {
+                width: 100%;
+            }
+            th {
+                text-align: right;
+                padding-bottom: 10px;
+            }
+            td {
+                text-align: left;
+                padding-left: 5px;
+            }
+            button {
+                display: inline-block;
+                width: 150px;
+                padding: 14px;
+                font-size: 14px;
+                margin-bottom: 12px;
+                padding-left: 0;
+                padding-right: 0;
+                text-align: center;
+                cursor: pointer;
+                background-color: #fafafa;
+                border: 1px solid #ccc;
+            }
+            button:hover {
+                background-color: #eee;
+            }
+            .log {
+                font-family: monospace;
+                width: 500px;
+                height: 400px;
+                border: 1px solid #ccc;
+                overflow: scroll;
+                text-align: left;
+                padding: 2px;
+            }
+        </style>
+        <script>
+            function getId() {
+                return location.search.substr(1);
+            }
+            
+            function start() {
+                restart();
+            }
+            
+            function restart() {
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", "restart?id=" + getId(), true);
+                xhttp.send();
+            }
+            
+            function stop() {
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", "stop?id=" + getId(), true);
+                xhttp.send();
+            }
+            
+            function openWebsocket(path) {
+                var ws = new WebSocket(path);
+                ws.onmessage = (e) => {
+                    appendToLog('<br/>' + e.data);
+                };
+                ws.onclose = (e) => {
+                    appendToLog('<br/><b>Disconnected Logs</b>')
+                };
+            }
+            
+            function load() {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var o = JSON.parse(xhttp.responseText);
+                        document.getElementById('title').innerHTML = (o.running ? '✔' : '✘') + ' ' + o.name;
+                        appendToLog(o.log.join('<br/>'));
+                    }
+                };
+                xhttp.open("GET", "processinfo?id=" + getId(), true);
+                xhttp.send();
+                openWebsocket('wss://' + location.host + '/info?id=' + getId());
+            }
+            
+            function appendToLog(text) {
+                var log = document.getElementById('log');
+                var height = log.scrollHeight;
+                log.innerHTML += text;
+                log.scrollTop += (log.scrollHeight - height);
+            }
+            
+            load();
+        </script>
+    </head>
+    <body>
+        <div class="outer">
+            <div class="inner">
+                <div class="background">
+                    <span id="title" class="title">✘ Loading...</span><br/>
+                    <button type="submit" onclick="start()">Start</button>
+                    <button type="submit" onclick="stop()">Stop</button>
+                    <button type="submit" onclick="restart()">Restart</button><br/>
+                    <div id="log" class="log"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

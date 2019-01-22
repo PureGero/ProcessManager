@@ -32,19 +32,38 @@
                 background-color: #eee;
             }
         </style>
+        <script>
+            function info(id) {
+                location.assign('info?' + id);
+            }
+            
+            function listProcesses() {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var json = JSON.parse(xhttp.responseText);
+                        for (var i in json) {
+                            var o = json[i];
+                            var div = document.createElement('div');
+                            div.className = 'background';
+                            div.innerHTML = (o.running ? '✔' : '✘') + ' ' + o.name;
+                            div.onclick = (function(id) {return function() {
+                                info(id);
+                            }})(o.pm_id);
+                            document.getElementById("processes").appendChild(div);
+                        }
+                    }
+                };
+                xhttp.open("GET", "list", true);
+                xhttp.send();
+            }
+            listProcesses();
+        </script>
     </head>
     <body>
         <div class="outer">
-            <div class="inner">
-                <div class="background">
-                    ✔ /home/puregero/lobby/start.sh
-                </div>
-                <div class="background">
-                    ✘ /home/puregero/survival/start.sh
-                </div>
-                <div class="background">
-                    + Create new process
-                </div>
+            <div id="processes" class="inner">
+                
             </div>
         </div>
     </body>
