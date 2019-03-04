@@ -39,7 +39,35 @@ var PAGES = {};
 var LOG = {};
 var INFO_LISTENERS = [];
 
+function ifServerStillAlive(id, callback, timeout) {
+    pm2.describe(id, (err, processDescription) => {
+        if (err) {
+            console.err(err);
+            return;
+        }
+        var pid = processDescription.pid;
+        setTimeout(() => {
+            pm2.describe(id, (err, processDescription) => {
+                if (err) {
+                    console.err(err);
+                    return;
+                }
+                if (pid == processDescription.pid) {
+	                callback();
+                }
+            });
+        }, timeout);
+    });
+}
+
 function appendLog(id, log) {
+    
+    if (log.indexOf('The server has stopped responding!') > 0) {
+        ifServerStillAlive(id, () => {
+            pm2.restart(process, (err) => {});
+        }, 15*1000);
+    }
+    
     id = id.toString();
     if (!(id in LOG))
         LOG[id] = [];
@@ -217,7 +245,9 @@ function restartProcess(req, res) {
 	pm2.sendLineToStdin(process, 'stop', (err, res) => {});
 	pm2.sendLineToStdin(process, 'end', (err, res) => {});
 	pm2.sendLineToStdin(process, 'quit', (err, res) => {});
-	pm2.restart(process, (err) => {});
+	ifServerStillAlive(id, () => {
+	    pm2.restart(process, (err) => {});
+	}, 10*1000);
     res.writeHead(200);
     res.end('OK');
 }
