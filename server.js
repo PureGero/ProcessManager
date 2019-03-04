@@ -64,7 +64,7 @@ function appendLog(id, log) {
     
     if (log.indexOf('The server has stopped responding!') > 0) {
         ifServerStillAlive(id, () => {
-            pm2.restart(process, (err) => {});
+            pm2.restart(id, (err) => {});
         }, 15*1000);
     }
     
@@ -245,7 +245,7 @@ function restartProcess(req, res) {
 	pm2.sendLineToStdin(process, 'stop', (err, res) => {});
 	pm2.sendLineToStdin(process, 'end', (err, res) => {});
 	pm2.sendLineToStdin(process, 'quit', (err, res) => {});
-	ifServerStillAlive(id, () => {
+	ifServerStillAlive(process, () => {
 	    pm2.restart(process, (err) => {});
 	}, 10*1000);
     res.writeHead(200);
