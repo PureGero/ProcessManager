@@ -1,5 +1,5 @@
 # ProcessManager
-Manage processes on your system with a nice web interface
+Manage pm2 processes on your system with a nice web interface
 
 # HTTPS
 Is your https certificate not working? Create one with
